@@ -24,8 +24,8 @@ First, clone your Laravel project or create a new one.
 To clone an existing project:
 
 ```bash
-git clone https://github.com/your-username/your-laravel-project.git
-cd project
+git clone https://github.com/monsur22/apex-api.git
+cd apex-api
 ```
 Rename .env.dev to .env.\
 Up all the  container of Docker:
@@ -39,7 +39,7 @@ check all container list:
 docker ps -a
 ```
 
-GO to the php container:
+Go to the php container:
 ```bash
 docker exec -it container_id bash
 ```
