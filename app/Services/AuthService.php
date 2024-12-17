@@ -65,7 +65,7 @@ class AuthService implements AuthServiceInterface
         $credentials = $request->only('email', 'password');
         $email = $request->email;
         $cacheKey = 'login_attempts:' . $email;
-        $blockTime = 120; // Block time in seconds
+        $blockTime = 300; // Block time in seconds
         $maxAttempts = 5; // Maximum number of allowed attempts
 
         // Fetch login attempts from cache
@@ -73,8 +73,10 @@ class AuthService implements AuthServiceInterface
 
         // Check if the user is blocked
         if ($loginAttempts['blocked_until'] && Carbon::now()->lessThan(Carbon::createFromTimestamp($loginAttempts['blocked_until']))) {
-            $remainingTime = Carbon::now()->diffInSeconds(Carbon::createFromTimestamp($loginAttempts['blocked_until']));
-            return response()->json(['error' => "Too many failed attempts. Try again in {$remainingTime} seconds."], 403);
+            $blockedUntil = Carbon::createFromTimestamp($loginAttempts['blocked_until']);
+            $remainingSeconds = Carbon::now()->diffInSeconds($blockedUntil);
+            $remainingMinutes = ceil($remainingSeconds / 60); // Convert seconds to minutes and round up
+            return response()->json(['error' => "Too many failed attempts. Try again in {$remainingMinutes} minute(s)."], 403);
         }
 
         // Attempt login
